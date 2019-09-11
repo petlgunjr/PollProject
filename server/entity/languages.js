@@ -1,18 +1,18 @@
 const dbContext = require("../dbcontext");
 const Table = require("unloop-database-dynamo")(dbContext.db, dbContext.docClient);
 
-const key = "name";
+const key = "language";
 exports.key = key;
 
 exports.schema = {
-    TableName : "Cats",
+    TableName : "Languages",
     BillingMode: "PROVISIONED",
     KeySchema: [
         { AttributeName: key, KeyType: "HASH"}
     ],
     AttributeDefinitions: [
-            { AttributeName: key, AttributeType: "S" }
-        ],
+        { AttributeName: key, AttributeType: "S" }
+    ],
     ProvisionedThroughput: {
         ReadCapacityUnits: 5,
         WriteCapacityUnits: 5
@@ -21,14 +21,20 @@ exports.schema = {
 
 exports.initialData = [
     {
-        name: "Jasper",
-        owner: "Kitty Kally",
-        age: 1
+        language: "Html",
+        count: 0 
     },
     {
-        name: "Daisy",
-        owner: "Katherine Mao",
-        age: 8
+        language: "CSS",
+        count: 0
+    },
+    {
+        language: "JavaScript",
+        count: 0
+    },
+    {
+        language: "React",
+        count: 0
     }
 ];
 
