@@ -29,7 +29,7 @@ export default class LanguagesForm extends React.Component {
     }
 
     render() {
-        {console.log("Before form creation Form")}
+        
         return (
             
             <form onSubmit={this.onSubmit} onReset={this.onReset}>

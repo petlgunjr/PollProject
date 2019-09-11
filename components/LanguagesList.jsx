@@ -5,6 +5,6 @@ export default (props) =>
     (
         
         <ul>
-            {props.languages.map( (currLanguage, i) => <LanguagesItem language={currLanguage.language} count={currLanguage.count} key={i} />)}
+            {props.languages.map( (currLanguage, i) => <LanguagesItem language={currLanguage.language} count={currLanguage.count} key={i} onAdd={props.onAdd}/>)}
         </ul>
     )

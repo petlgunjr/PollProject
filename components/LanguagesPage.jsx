@@ -6,7 +6,7 @@ import LanguagesForm from "./LanguagesForm"
 export default class LanguagesPage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { adding: false, newLanguages: {} }
+        this.state = { adding: false, newLanguages: [] }
         this.props = props;
         this.onChange = this.onChange.bind(this);
         this.onAdd = this.onAdd.bind(this);
@@ -14,9 +14,8 @@ export default class LanguagesPage extends React.Component {
         this.onSave = this.onSave.bind(this);
     }
 
-    onAdd(e) {
-        e.preventDefault();
-
+    onAdd(language, count) {
+        axios.put(`/api/languages/${language}`, {language,count:count++})
         this.setState({adding:true});
     }
 
@@ -52,12 +51,8 @@ export default class LanguagesPage extends React.Component {
     render() {
         return (
             <div>
-                <button onClick={this.onAdd}>
-                    Add
-                </button>
-                {console.log(this.state.newLanguages)}
                 {this.state.adding && <LanguagesForm languages={this.state.newLanguages} onChange={this.onChange} onSave={this.onSave} onReset={this.onCancel} /> }
-                {this.state.newLanguages && this.state.newLanguages.length && <LanguagesList languages={this.state.newLanguages} /> }
+                {this.state.newLanguages && this.state.newLanguages.length && <LanguagesList languages={this.state.newLanguages} onAdd={this.onAdd} /> }
             </div>
         )
     }
