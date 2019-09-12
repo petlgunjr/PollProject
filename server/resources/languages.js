@@ -25,28 +25,33 @@ module.exports = (entity) => {
             await languages.create(language);
             ctx.status = 201;
             ctx.body = 'added!';
+        },
+
+        destroy:async function(ctx, next) {
+            if (!ctx.request.body.language) {
+                ctx.throw(400, "must supply a language");
+            }
+            await languages.delete(ctx.params.language);
+        },
+
+        update:async function(ctx, next) {
+            //implement me!
+            await next;
+            console.log(ctx.request.body.language, ctx.request.body.count);
+            if (!ctx.request.body ||
+                !ctx.request.body.language||
+                ctx.request.body.count < 0 ||
+                ctx.request.body.count == undefined) {
+                    ctx.throw(400, ".name and .count required");
+            }
+            let language = (({ name, count }) => ({ name, count }))(ctx.request.body);
+            await languages.update(language, ctx.params.language);
+            ctx.status = 200;
+            ctx.body = "updated!";          
         }
-
-        /**
-         *
-         * DELETE a cat
-         *
-         * destroy: async function(next) {
-         *   //implement me!
-         * }
-         */
-
-            /**
-         *
-         * UPDATE a cat
-         *
-         * update = async function(next) {
-         *   //implement me!
-         * }
-         */
    }
-}
+};
 
 module.exports.permissions = {
     default: [] //open permissions
-}
+};

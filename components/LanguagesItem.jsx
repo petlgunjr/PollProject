@@ -5,8 +5,11 @@ export default (props) =>
     <li>
         <div>Language: {props.language}</div>
         <div>Count: {props.count}</div>
-        <button onClick={() => props.onAdd(props.language, props.count)}>
-            Add
+        <button onClick={() => props.onIncrement(props.language, props.count)}>
+            Increment
+        </button>
+        <button onClick={() => props.onDecrement(props.language, props.count)}>
+            Decrement
         </button>
     </li>
 )

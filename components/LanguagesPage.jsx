@@ -9,13 +9,19 @@ export default class LanguagesPage extends React.Component {
         this.state = { adding: false, newLanguages: [] }
         this.props = props;
         this.onChange = this.onChange.bind(this);
-        this.onAdd = this.onAdd.bind(this);
+        this.onIncrement = this.onIncrement.bind(this);
+        this.onDecrement = this.onDecrement.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onSave = this.onSave.bind(this);
     }
 
-    onAdd(language, count) {
-        axios.put(`/api/languages/${language}`, {language,count:count++})
+    onIncrement(language, count) {
+        axios.put(`/api/languages/${language}`, {language,count:count + 1})
+        this.setState({adding:true});
+    }
+
+    onDecrement(language, count) {
+        axios.put(`/api/languages/${language}`, {language,count:count - 1})
         this.setState({adding:true});
     }
 
@@ -52,7 +58,7 @@ export default class LanguagesPage extends React.Component {
         return (
             <div>
                 {this.state.adding && <LanguagesForm languages={this.state.newLanguages} onChange={this.onChange} onSave={this.onSave} onReset={this.onCancel} /> }
-                {this.state.newLanguages && this.state.newLanguages.length && <LanguagesList languages={this.state.newLanguages} onAdd={this.onAdd} /> }
+                {this.state.newLanguages && this.state.newLanguages.length && <LanguagesList languages={this.state.newLanguages} onIncrement={this.onIncrement} onDecrement={this.onDecrement}/> }
             </div>
         )
     }
