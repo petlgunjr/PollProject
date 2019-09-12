@@ -8,7 +8,7 @@ export default (props) =>
         <button onClick={() => props.onIncrement(props.language, props.count)}>
             Increment
         </button>
-        <button onClick={() => props.onDecrement(props.language, props.count)}>
+        <button onClick={() => props.onDecrament(props.language, props.count)}>
             Decrement
         </button>
     </li>

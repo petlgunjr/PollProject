@@ -20,8 +20,8 @@ module.exports = (entity) => {
         },
         create: async function(ctx, next) {
             await next;
-            if (!ctx.request.body || !ctx.request.body.name) ctx.throw(400, '.name required');
-            let language = (({name, count}) => ({name, count}))(ctx.request.body);
+            if (!ctx.request.body || !ctx.request.body.language) ctx.throw(400, '.name required');
+            let language = (({language, count}) => ({language, count}))(ctx.request.body);
             await languages.create(language);
             ctx.status = 201;
             ctx.body = 'added!';
@@ -42,9 +42,10 @@ module.exports = (entity) => {
                 !ctx.request.body.language||
                 ctx.request.body.count < 0 ||
                 ctx.request.body.count == undefined) {
+                    console.log("name");
                     ctx.throw(400, ".name and .count required");
             }
-            let language = (({ name, count }) => ({ name, count }))(ctx.request.body);
+            let language = (({ language, count }) => ({ language, count }))(ctx.request.body);
             await languages.update(language, ctx.params.language);
             ctx.status = 200;
             ctx.body = "updated!";          

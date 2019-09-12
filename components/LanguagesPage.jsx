@@ -3,46 +3,53 @@ import * as axios from "axios";
 import LanguagesList from "./LanguagesList"
 import LanguagesForm from "./LanguagesForm"
 
+const getNewLang = () => ({language: "", count: 0});
+
 export default class LanguagesPage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { adding: false, newLanguages: [] }
+        this.state = { adding: false, languages: [], newLanguage: getNewLang() }
         this.props = props;
         this.onChange = this.onChange.bind(this);
         this.onIncrement = this.onIncrement.bind(this);
-        this.onDecrement = this.onDecrement.bind(this);
+        this.onDecrament = this.onDecrament.bind(this);
         this.onCancel = this.onCancel.bind(this);
         this.onSave = this.onSave.bind(this);
+        this.onShowAdd = this.onShowAdd.bind(this);
     }
 
     onIncrement(language, count) {
         axios.put(`/api/languages/${language}`, {language,count:count + 1})
-        this.setState({adding:true});
+            .then(() => this.load());
     }
 
-    onDecrement(language, count) {
+    onDecrament(language, count) {
         axios.put(`/api/languages/${language}`, {language,count:count - 1})
-        this.setState({adding:true});
+            .then(() => this.load());
     }
 
     onChange(target) {
-        var newLanguage = {...this.state.newLanguages};
+        let newLanguage = {...this.state.newLanguage};
         newLanguage[target.name] = target.value;
-        this.setState( {newLanguages: newLanguages });
+        this.setState( {newLanguage: newLanguage} );
     }
 
     onSave() {
-        axios.post("/api/languages/", this.state.newLanguages)
+        axios.post("/api/languages/", this.state.newLanguage)
         .then ( () => this.load() )
         .then(
-            this.setState({ newLanguages: {}, adding: false})
+            this.setState({ newLanguage: getNewLang(), adding: false})
         ).catch(
             //todo: set an error condition
         )
     }
 
+    onShowAdd() {
+        this.setState({ adding: !this.state.adding ? true : false });
+    }
+
     onCancel() {
-        this.setState({ newLanguages: {}, adding: false});
+        this.setState({ newLanguage: getNewLang(), adding: false});
     }
 
     componentDidMount() {
@@ -51,14 +58,30 @@ export default class LanguagesPage extends React.Component {
 
     async load() {
         var response = await axios.get("/api/languages");
-        this.setState({ newLanguages: response.data });
+        this.setState({ languages: response.data });
     }
 
     render() {
         return (
             <div>
-                {this.state.adding && <LanguagesForm languages={this.state.newLanguages} onChange={this.onChange} onSave={this.onSave} onReset={this.onCancel} /> }
-                {this.state.newLanguages && this.state.newLanguages.length && <LanguagesList languages={this.state.newLanguages} onIncrement={this.onIncrement} onDecrement={this.onDecrement}/> }
+                {this.state.adding && 
+                    <LanguagesForm 
+                        languages={this.state.newLanguage.language} 
+                        onChange={this.onChange} 
+                        onSave={this.onSave} 
+                        onReset={this.onCancel} /> 
+                }
+                <button onClick={() => this.onShowAdd()}>
+                    Add Language
+                </button>
+                {this.state.languages && 
+                this.state.languages.length && 
+                    <LanguagesList 
+                        languages={this.state.languages} 
+                        onIncrement={this.onIncrement} 
+                        onDecrament={this.onDecrament}
+                    /> 
+                }
             </div>
         )
     }

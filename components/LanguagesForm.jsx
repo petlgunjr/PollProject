@@ -34,7 +34,6 @@ export default class LanguagesForm extends React.Component {
             
             <form onSubmit={this.onSubmit} onReset={this.onReset}>
                 <input type="text" name="language" placeholder="language" value={this.props.language} onChange={this.onChange} />
-                <input type="text" name="count" placeholder="count" value={this.props.count} onChange={this.onChange} />
                 <input type="submit" value="Submit" />
                 <input type="reset" value="Cancel" />
             </form>
