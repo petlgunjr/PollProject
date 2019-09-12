@@ -11,5 +11,8 @@ export default (props) =>
         <button onClick={() => props.onDecrament(props.language, props.count)}>
             Decrement
         </button>
+        <button onClick={() => props.onRemove(props.language)}>
+            Remove Language
+        </button>
     </li>
 )

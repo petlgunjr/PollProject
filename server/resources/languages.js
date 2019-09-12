@@ -28,7 +28,7 @@ module.exports = (entity) => {
         },
 
         destroy:async function(ctx, next) {
-            if (!ctx.request.body.language) {
+            if (!ctx.params.language) {
                 ctx.throw(400, "must supply a language");
             }
             await languages.delete(ctx.params.language);

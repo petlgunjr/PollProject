@@ -14,6 +14,7 @@ export default class LanguagesPage extends React.Component {
         this.onIncrement = this.onIncrement.bind(this);
         this.onDecrament = this.onDecrament.bind(this);
         this.onCancel = this.onCancel.bind(this);
+        this.onRemove = this.onRemove.bind(this);
         this.onSave = this.onSave.bind(this);
         this.onShowAdd = this.onShowAdd.bind(this);
     }
@@ -34,6 +35,11 @@ export default class LanguagesPage extends React.Component {
         this.setState( {newLanguage: newLanguage} );
     }
 
+    onRemove(language) {
+        axios.delete(`/api/languages/${language}`)
+            .then(() => this.load());
+    }
+
     onSave() {
         axios.post("/api/languages/", this.state.newLanguage)
         .then ( () => this.load() )
@@ -51,7 +57,7 @@ export default class LanguagesPage extends React.Component {
     onCancel() {
         this.setState({ newLanguage: getNewLang(), adding: false});
     }
-
+    
     componentDidMount() {
         this.load();
     }
@@ -80,7 +86,11 @@ export default class LanguagesPage extends React.Component {
                         languages={this.state.languages} 
                         onIncrement={this.onIncrement} 
                         onDecrament={this.onDecrament}
+                        onRemove={this.onRemove}
                     /> 
+                }
+                {this.state.languages.length <= 0 &&
+                    <h1>There are no items to display!!</h1>
                 }
             </div>
         )
