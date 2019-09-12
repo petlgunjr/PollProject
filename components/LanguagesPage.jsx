@@ -8,7 +8,7 @@ const getNewLang = () => ({language: "", count: 0});
 export default class LanguagesPage extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { adding: false, languages: [], newLanguage: getNewLang() }
+        this.state = { adding: false, languages: [], newLanguage: getNewLang() };
         this.props = props;
         this.onChange = this.onChange.bind(this);
         this.onIncrement = this.onIncrement.bind(this);
