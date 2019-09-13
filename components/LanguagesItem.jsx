@@ -17,7 +17,7 @@ export default (props) => {
                     </button>
                 </td>
                 <td>
-                    <button onClick={() => props.onRemove(props.language)}>
+                    <button id="remButt" onClick={() => props.onRemove(props.language)}>
                         Remove Language
                     </button>
                 </td>

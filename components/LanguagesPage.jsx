@@ -19,6 +19,10 @@ export default class LanguagesPage extends React.Component {
         this.onShowAdd = this.onShowAdd.bind(this);
     }
 
+    clearBox(id) {
+        document.getElementById(id).value = "";
+    }
+
     onIncrement(language, count) {
         axios.put(`/api/languages/${language}`, {language,count:count + 1})
             .then(() => this.load());
@@ -37,7 +41,8 @@ export default class LanguagesPage extends React.Component {
 
     onRemove(language) {
         axios.delete(`/api/languages/${language}`)
-            .then(() => this.load());
+            .then(() => this.load())
+            .then(this.clearBox("remButt"));
     }
 
     onSave() {
@@ -63,8 +68,16 @@ export default class LanguagesPage extends React.Component {
     }
 
     async load() {
-        var response = await axios.get("/api/languages");
-        this.setState({ languages: response.data });
+        let response = await axios.get("/api/languages");
+        this.setState({ languages: response.data.sort((a, b) => {
+            if (a.language.toUpperCase() < b.language.toUpperCase()) {
+                return -1;
+            }
+            if (a.language.toUpperCase() > b.language.toUpperCase()) {
+                return 1;
+            }
+            return 0;
+        }) });
     }
 
     render() {

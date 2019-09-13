@@ -37,12 +37,10 @@ module.exports = (entity) => {
         update:async function(ctx, next) {
             //implement me!
             await next;
-            console.log(ctx.request.body.language, ctx.request.body.count);
             if (!ctx.request.body ||
                 !ctx.request.body.language||
                 ctx.request.body.count < 0 ||
                 ctx.request.body.count == undefined) {
-                    console.log("name");
                     ctx.throw(400, ".name and .count required");
             }
             let language = (({ language, count }) => ({ language, count }))(ctx.request.body);
