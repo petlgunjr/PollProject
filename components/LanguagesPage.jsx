@@ -17,6 +17,7 @@ export default class LanguagesPage extends React.Component {
         this.onRemove = this.onRemove.bind(this);
         this.onSave = this.onSave.bind(this);
         this.onShowAdd = this.onShowAdd.bind(this);
+        this.sortItems = this.sortIems.bind(this);
     }
 
     clearBox(id) {
@@ -42,15 +43,14 @@ export default class LanguagesPage extends React.Component {
     onRemove(language) {
         axios.delete(`/api/languages/${language}`)
             .then(() => this.load())
-            .then(this.clearBox("remButt"));
     }
 
     onSave() {
         axios.post("/api/languages/", this.state.newLanguage)
         .then ( () => this.load() )
-        .then(
-            this.setState({ newLanguage: getNewLang(), adding: false})
-        ).catch(
+        .then(this.setState({ newLanguage: getNewLang(), adding: false}))
+        .then(document.getElementById("addButt").value = "")
+        .catch(
             //todo: set an error condition
         )
     }
@@ -67,17 +67,17 @@ export default class LanguagesPage extends React.Component {
         this.load();
     }
 
+    sortIems(target) {
+        return target.sort((a, b) => {
+        if (a.language.toUpperCase() < b.language.toUpperCase()) { return -1; };
+        if (a.language.toUpperCase() > b.language.toUpperCase()) { return 1; };
+        return 0;
+        })
+    }
+
     async load() {
         let response = await axios.get("/api/languages");
-        this.setState({ languages: response.data.sort((a, b) => {
-            if (a.language.toUpperCase() < b.language.toUpperCase()) {
-                return -1;
-            }
-            if (a.language.toUpperCase() > b.language.toUpperCase()) {
-                return 1;
-            }
-            return 0;
-        }) });
+        this.setState({ languages: this.sortItems(response.data) });
     }
 
     render() {
