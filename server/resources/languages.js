@@ -9,7 +9,7 @@ module.exports = (entity) => {
         },
         show: async function(ctx, next){
             await next;
-            let result = await languages.get(ctx.params.languages);
+            let result = await languages.get(ctx.params.languages.toUpperCase());
 
             if (!result) {
                 ctx.status = 404;
@@ -21,7 +21,7 @@ module.exports = (entity) => {
         create: async function(ctx, next) {
             await next;
             if (!ctx.request.body || !ctx.request.body.language) ctx.throw(400, '.name required');
-            let language = (({language, count}) => ({language, count}))(ctx.request.body);
+            let language = (({language, count}) => ({key:language.toUpperCase(), language, count}))(ctx.request.body);
             await languages.create(language);
             ctx.status = 201;
             ctx.body = 'added!';
@@ -31,7 +31,9 @@ module.exports = (entity) => {
             if (!ctx.params.language) {
                 ctx.throw(400, "must supply a language");
             }
-            await languages.delete(ctx.params.language);
+            await languages.delete(ctx.params.language.toUpperCase());
+            ctx.status = 204;
+            ctx.body = '';
         },
 
         update:async function(ctx, next) {
@@ -43,10 +45,10 @@ module.exports = (entity) => {
                 ctx.request.body.count == undefined) {
                     ctx.throw(400, ".name and .count required");
             }
-            let language = (({ language, count }) => ({ language, count }))(ctx.request.body);
-            await languages.update(language, ctx.params.language);
+            let language = (({ language, count }) => ({ key: language.toUpperCase(), language, count }))(ctx.request.body);
+            await languages.update(language, ctx.params.language.toUpperCase());
             ctx.status = 200;
-            ctx.body = "updated!";          
+            ctx.body = "updated!";
         }
    }
 };

@@ -1,146 +1,157 @@
 import * as React from "react";
+import { useState, useEffect, useMemo } from "react";
 import * as axios from "axios";
-import LanguagesList from "./LanguagesList"
-import LanguagesForm from "./LanguagesForm";
+import LanguageList from "./LanguagesList"
+import LanguageForm from "./LanguageForm"
+import CreateReport from "./CreateReport"
 
-const getNewLang = () => ({language: "", count: 0});
+export default (props) => {
+    const [language, setLanguage] = useState('');
+    const [languages, setLanguages] = useState([]);
+    const [numSortLanguages, setNumSortLanguages] = useState([]);
+    const [showSearchButton, setShowSearchButton] = useState(true);
+    const [showMainList, setShowMainList] = useState(true);
+    const [showReport, setShowReport] = useState(false);
+    const [showReportButton, setShowReportButton] = useState(true);
+    const [showForm, setShowForm] = useState(false);
 
-export default class LanguagesPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            adding: false,
-            languages: [],
-            newLanguage: getNewLang(),
-            showSearchButton: true
-        };
-        this.props = props;
-        this.onChange = this.onChange.bind(this);
-        this.filter = this.filter.bind(this);
-        this.getView = this.getView.bind(this);
-        this.onIncrement = this.onIncrement.bind(this);
-        this.onDecrament = this.onDecrament.bind(this);
-        this.onReset = this.onReset.bind(this);
-        this.onRemove = this.onRemove.bind(this);
-        this.onSave = this.onSave.bind(this);
-        this.onShowAdd = this.onShowAdd.bind(this);
-        this.compare = this.compare.bind(this);
-    }
+    const filter = (languages) =>
+        languages.language.toUpperCase().startsWith(language.toUpperCase());
 
-    clearBox(id) {
-        document.getElementById(id).value = "";
-    }
-
-    onIncrement(language, count) {
-        axios.put(`/api/languages/${language}`, {language,count:count + 1})
-            .then(() => this.load());
-    }
-
-    onDecrament(language, count) {
-        axios.put(`/api/languages/${language}`, {language,count:count - 1})
-            .then(() => this.load());
-    }
-
-    onChange(e) {
-        let newLang = {...this.state.newLanguage};
-        newLang.language = e.target.value;
-        this.setState({
-            newLanguage: newLang,
-            sortLangs: this.getView(this.state.languages)
-        });
-    }
-
-    onRemove(language) {
-        axios.delete(`/api/languages/${language}`)
-            .then(() => this.load())
-    }
-
-    onSave() {
-        axios.post("/api/languages/", this.state.newLanguage)
-        .then ( () => this.load() )
-        .then(this.setState({ newLanguage: getNewLang(), adding: false}))
-        .then(this.clearBox("addButt"))
-        .then(this.onShowAdd())
-        .catch(() => {
-            if(err) {
-                alert(err);
-            }
-        }
-            //todo: set an error condition
-        )
-    }
-
-    onShowAdd() {
-        this.setState({ adding: !this.state.adding ? true : false, showSearchButton: !this.state.showSearchButton ? true : false });
-    }
-
-    onReset(e) {
-        e.preventDefault();
-        this.props.onReset && this.props.onReset(e.target);
-        this.onShowAdd();
-    }
-    
-    componentDidMount() {
-        this.load();
-    }
-
-    filter(languages) {
-        return languages.language.toUpperCase().startsWith(this.state.newLanguage.language.toUpperCase());
-    }
-
-    compare(a, b) {
-        if (a.language.toUpperCase() < b.language.toUpperCase()) { return -1; };
-        if (a.language.toUpperCase() > b.language.toUpperCase()) { return 1; };
+    const sortList = (a, b) => {
+        let languageA = a.language.toUpperCase();
+        let languageB = b.language.toUpperCase();
+        if (languageA < languageB) { return -1; }
+        if (languageA > languageB) { return 1; }
         return 0;
     }
 
-    getView (languages) {
-        return languages.filter(this.filter).sort(this.compare);
+    const load = () =>
+            axios.get("/api/languages")
+            .then((response) => setLanguages(response.data));
+            useEffect(() => {load();}, [true]);
+
+    const onSave = () => {
+        axios.post("/api/languages/", {language, count: 0 })
+            .then(() => setLanguage(''))
+            .then(() => load())
     }
 
-    async load() {
-        let response = await axios.get("/api/languages");
-        this.setState({
-            sortLangs: this.getView(response.data),
-            languages: response.data
-        })
+    const onUpdate = (language) => {
+        axios.put(`/api/languages/${language.language}`, language)
+            .then(setLanguage(''))
+            .then(() => load());
     }
 
-    render() {
-        const view = this.getView(this.state.languages);
-        return (
-            <div>
-                {this.state.adding && 
-                    <LanguagesForm 
-                        onChange={this.onChange}
-                        onSave={this.onSave}
-                        onReset={this.onReset} 
+    const onDelete = (language) => {
+        axios.delete(`/api/languages/${language}`)
+            .then(setLanguage(''))
+            .then(() => load());
+    }
+
+    const onShowReport = (e) => {
+        e.preventDefault();
+        axios.get("/api/languages")
+            .then((response) => {
+                const [...data] = response.data;
+                data.sort((a, b) => b.count - a.count);
+                setNumSortLanguages(data);
+            });
+
+        setShowSearchButton(true);
+        setShowMainList(false);
+        setShowReport(true);
+        setShowReportButton(false);
+        setShowForm(false);
+    }
+
+    const onShowForm = () => {
+        setShowForm(true);
+        setShowSearchButton(false);
+        setShowMainList(true);
+        setShowReportButton(true);
+        setLanguage('');
+    }
+
+    const onCloseReport = () => {
+        setShowSearchButton(true);
+        setShowMainList(true);
+        setShowReport(false);
+        setShowReportButton(true);
+    }
+
+    const alertDel = (language, count) => {
+        if (count > 0 && confirm(`The technology you're deleting has data! Do you want to delete?`)) {
+            onDelete(language);
+        } else {
+            onDelete(language);
+        }
+    }
+
+    const view = useMemo(() => languages && languages.filter(filter).sort(sortList),
+        [languages, language]);
+    return (
+        <div>
+            {showSearchButton &&
+                <div>
+                    <button onClick={() => onShowForm()}>
+                        Search...
+                    </button>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                </div>
+            }
+            {showReportButton &&
+                <button onClick={onShowReport} >
+                    Show Report
+                </button>
+            }
+            {showReport &&
+                <CreateReport onCloseReport={onCloseReport} languages={numSortLanguages} />
+            }
+            {showForm &&
+                <LanguageForm
+                    language={language}
+                    onChange={(target) => setLanguage(target.value)}
+                    onSave={onSave}
+                    onReset={() => onShowForm}
+                />
+            }
+            {view && view.length && showMainList &&
+                <table>
+                    <thead>
+                        <tr>
+                            <td>
+                                <h3>Language</h3>
+                            </td>
+                            <td>
+                                <h3>Count</h3>
+                            </td>
+                            <td>
+                                <h3>Inc</h3>
+                            </td>
+                            <td>
+                                <h3>Dec</h3>
+                            </td>
+                            <td>
+                                <h3>Remove</h3>
+                            </td>
+                        </tr>
+                    </thead>
+                    <LanguageList
+                        languages={view}
+                        onIncrement={(language, count) => onUpdate({ language, count: ++count })}
+                        onDecrament={(language, count) => onUpdate({ language, count: count && --count })}
+                        onDeleteLang={alertDel}
+                        onReset={() => setLanguage('')}
                     />
-                }
-                {this.state.showSearchButton && 
-                    <div>
-                        <button onClick={() => this.onShowAdd()}>
-                            Search...
-                        </button>
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                    </div>
-                }
-                {view && 
-                view.length && 
-                    <LanguagesList 
-                        languages={view} 
-                        onIncrement={this.onIncrement} 
-                        onDecrament={this.onDecrament}
-                        onRemove={this.onRemove}
-                    /> 
-                }
-                {view.length <= 0 &&
-                    <h1>There are no items to display!!</h1>
-                }
-            </div>
-        )
-    }
+                </table>
+            }
+            {view <= 0 &&
+                <h1>There are no items to display</h1>
+            }
+        </div>
+    )
 }

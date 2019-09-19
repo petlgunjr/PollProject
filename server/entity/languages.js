@@ -1,7 +1,7 @@
 const dbContext = require("../dbcontext");
 const Table = require("unloop-database-dynamo")(dbContext.db, dbContext.docClient);
 
-const key = "language";
+const key = "key";
 exports.key = key;
 
 exports.schema = {
@@ -21,18 +21,22 @@ exports.schema = {
 
 exports.initialData = [
     {
+        key: "HTML",
         language: "Html",
-        count: 0 
+        count: 0
     },
     {
+        key: "CSS",
         language: "CSS",
         count: 0
     },
     {
+        key: "JAVASCRIPT",
         language: "JavaScript",
         count: 0
     },
     {
+        key: "REACT",
         language: "React",
         count: 0
     }

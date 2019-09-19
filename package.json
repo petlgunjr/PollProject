@@ -14,8 +14,8 @@
     "type": "git",
     "url": "git+https://github.com/un-loop/PollProject.git"
   },
-  "author": "Michael Armes",
-  "license": "MIT",
+  "author": "Peter L Gunter Jr",
+  "license": "Full Stack Web Developer",
   "bugs": {
     "url": "https://github.com/un-loop/PollProject/issues"
   },
@@ -34,6 +34,8 @@
     "koa-mount": "^4.0.0",
     "material-ui": "^0.20.2",
     "react": "^16.9.0",
+    "react-bootstrap": "^1.0.0-beta.12",
+    "react-bootstrap-table": "^4.3.1",
     "react-dom": "^16.9.0",
     "react-material-ui-form-validator": "^2.0.9",
     "unloop-database-dynamo": "^1.3.2",

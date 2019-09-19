@@ -1,18 +1,19 @@
 import * as React from "react";
 import LanguagesItem from "./LanguagesItem";
 
+
 export default (props) =>
-    (        
-        <table>
-            {props.languages.map( (currLanguage, i) => (
-                <LanguagesItem 
-                    language={currLanguage.language}  
-                    key={i} 
-                    onIncrement={props.onIncrement} 
+    (
+        <tbody>
+            { props.languages.map( (currLanguage, i) => (
+                <LanguagesItem
+                    language={currLanguage.language}
+                    key={i}
+                    onIncrement={props.onIncrement}
                     onDecrament={props.onDecrament}
-                    onRemove={props.onRemove}
+                    onRemove={props.onDeleteLang}
                     count={currLanguage.count}
                 />
             ))}
-        </table>
+        </tbody>
     )
