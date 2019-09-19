@@ -4,6 +4,7 @@ import * as axios from "axios";
 import LanguageList from "./LanguagesList"
 import LanguageForm from "./LanguageForm"
 import CreateReport from "./CreateReport"
+import StyleList from './Styles';
 
 export default (props) => {
     const [language, setLanguage] = useState('');
@@ -91,7 +92,7 @@ export default (props) => {
     const view = useMemo(() => languages && languages.filter(filter).sort(sortList),
         [languages, language]);
     return (
-        <div>
+        <div style={StyleList.Body}>
             {showSearchButton &&
                 <div>
                     <button onClick={() => onShowForm()}>
@@ -120,7 +121,7 @@ export default (props) => {
                 />
             }
             {view && view.length && showMainList &&
-                <table>
+                <table style={StyleList.MainList}>
                     <thead>
                         <tr>
                             <td>

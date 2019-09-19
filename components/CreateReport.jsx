@@ -10,12 +10,12 @@ export default (props) => (
         </tr>
       </thead>
       <tbody>
-        {props.languages.map((currLang, i) => {
+        {props.languages.map((currLang, i) =>
           <tr key={i}>
             <td>{currLang.language}</td>
             <td>{currLang.count}</td>
           </tr>
-        })}
+        )}
       </tbody>
     </table>
     <button onClick={props.onCloseReport}>

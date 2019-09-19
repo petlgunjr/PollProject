@@ -1,4 +1,6 @@
 import * as React from "react";
+import StyleList from "./Styles";
+
 export default class LanguageForm extends React.Component {
    constructor(props) {
        super(props);
@@ -21,7 +23,7 @@ export default class LanguageForm extends React.Component {
    }
    render() {
        return (
-           <form onSubmit={this.onSubmit} onReset={this.onReset}>
+           <form style={StyleList.SearchForm} onSubmit={this.onSubmit} onReset={this.onReset}>
                <div>
                    <input id="add" type="text" name="name"
                        placeholder="add Technology"
